@@ -1,0 +1,29 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: 'AWS::Serverless-2016-10-31'
+
+Resources:
+  MyLambdaFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ./lambda-function-code/
+      Handler: index.handler
+      Runtime: nodejs14.x
+      MemorySize: 128
+
+  MyDynamoDBTable:
+    Type: AWS::Serverless::SimpleTable
+    Properties:
+      PrimaryKey:
+        Name: id
+        Type: 'String'
+
+  MyApiGateway:
+    Type: AWS::Serverless::Api
+
+Outputs:
+  LambdaFunctionArn:
+    Value: !GetAtt MyLambdaFunction.Arn
+  DynamoDBTableName:
+    Value: !Ref MyDynamoDBTable
+  ApiGatewayEndpoint:
+    Value: !Sub "https://${MyApiGateway}.execute-api.${AWS::Region}.amazonaws.com"
